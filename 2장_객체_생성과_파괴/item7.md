@@ -136,7 +136,7 @@ public class SoftReferenceExample {
         Thread.sleep(3000L);  
   
         // 없어지지 않는다 
-        // 왜냐면 메모리가 충분해서.. 굳이 제거할 필요가 없으니까..
+        // 왜냐면 메모리가 충분해서, 굳이 제거할 필요가 없으니까
         System.out.println(soft.get());  
     }  
 }
@@ -155,8 +155,8 @@ public class WeakReferenceExample {
         System.gc();  
         Thread.sleep(3000L);  
   
-        // TODO 거의 없어집니다.  
-        //  왜냐면 약하니까(?)...  
+        // 거의 없어집니다.  
+        // 왜냐면 약하니까(?) 
         System.out.println(weak.get());  
     }  
 }
@@ -178,7 +178,7 @@ public class PhantomReferenceExample {
         System.gc();  
         Thread.sleep(3000L);  
   
-        //  GC되지 않고 큐에 들어간다
+        // 없어지지 않고 큐에 들어간다
         System.out.println(phantom.isEnqueued());  // true 출력 
   
         Reference<? extends BigObject> reference = rq.poll();  
