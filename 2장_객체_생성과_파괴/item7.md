@@ -38,7 +38,7 @@ public class Stack {
 }
 ```
 
-특별한 문제가 없어 보이지만, 해당 코드에서는 <mark>메모리 누수</mark>가 일어나고 있다
+특별한 문제가 없어 보이지만, 해당 코드에서는 <b>메모리 누수</b>가 일어나고 있다
 
 바로 pop() 메서드가 그 원인이다
 
@@ -63,7 +63,7 @@ public class Stack {
 
 
 ### 직접 메모리를 관리하는 경우
-Stack 예시 처럼 직접 메모리를 관리하는 경우에는 명시적으로 <mark>해당 참조를 다 썼을 때 null 처리</mark>를 해주면 된다
+Stack 예시 처럼 직접 메모리를 관리하는 경우에는 명시적으로 <b>해당 참조를 다 썼을 때 null 처리</b>를 해주면 된다
 ```java
 class Stack {
     // ...
@@ -82,42 +82,42 @@ class Stack {
 
 또한, 다 쓴 참조를 null 처리를 하게 되면 실수로 사용하게 될 경우 NullPointerException 을 유발할 수 있으므로 조기에 대응할 수 있다
 
-하지만 이 방식은 <u>예외적인 경우</u>이며 모든 객체를 사용하고 나서 일일이 null 처리하는 방식은 바람직하지 않다
+하지만 이 방식은 <b>예외적인 경우</b>이며 모든 객체를 사용하고 나서 일일이 null 처리하는 방식은 바람직하지 않다
 
-가장 좋은 방법은 그 <u>참조를 담은 변수를 <mark><i>유효 범위(scope) 밖으로 밀어내는 것이다</i></u></mark>
+가장 좋은 방법은 그 <b>참조를 담은 변수를 <i>유효 범위(scope) 밖으로 밀어내는 것이다</i></b>
 
 
 ### 캐시(Cache)
 객체 참조를 캐시에 넣고 나서, 객체를 다 쓴 뒤로도 한참을 그냥 놔두게 되면 메모리 누수가 발생할 수 있다.
 이 경우 해법은 여러가지가 있는데
 
-1. 캐시(Cache)의 Key에 의존하는 동안에만 Value가 필요한 경우 WeakHashMap을 사용하자
+1. 캐시(Cache)의 Key에 의존하는 동안에만 Value가 필요한 경우 WeakHashMap을 사용하자<br>
 WeakHashMap는 더이상 사용하지 않는 객체를 GC할 때 자동으로 삭제해주는 Map으로 WeakReference를 사용하여 구현된 Map이다
 
-Key를 통해서 캐시에 접근하여 필요한 로직을 모두 수행한 뒤,
+Key를 통해서 캐시에 접근하여 필요한 로직을 모두 수행한 뒤,<br>
 Key를 null로 초기화 하면 GC가 돌 때 자동으로 Map에서 삭제가 된다
 
-단, 이 방식을 사용한다면 반드시 Map의 Key는 커스텀한 CacheKey 클래스를 만들어 사용해야한다
+단, 이 방식을 사용한다면 반드시 Map의 Key는 커스텀한 CacheKey 클래스를 만들어 사용해야한다<br>
 JVM 내부에서 일부의 값들을 캐싱을 하고 있기 때문에 Interger, Long, String 등과 같은 기본 Reference Type 클래스를 Key로 사용하게 되면 null로 초기화 하더라도 Map에서 삭제되지 않는다.
 
 (Reference에 대한 내용은 아래에서 자세히 다루도록 한다)
 
 2. 쓰지 않는 캐시 내 엔트리를 청소해주자
-(ScheduledThreadPoolExecutor 같은) 백그라운드 스레드를 활용해 주기적으로 오래된 캐시는 청소를 해주는 방법이다
+(ScheduledThreadPoolExecutor 같은) 백그라운드 스레드를 활용해 주기적으로 오래된 캐시는 청소를 해주는 방법이다<br>
 혹은 LinkedHashMap의 경우 removeEldestEntry 메소드도 제공한다
 
-3. 더 복잡한 캐시를 만들고 싶다면 java.lang.ref 패키지를 직접 활용해야 할 것이다
+3. 더 복잡한 캐시를 만들고 싶다면 java.lang.ref 패키지를 직접 활용해야 할 것이다<br>
 java.lang.ref 패키지를 활용하면 다양한 Reference들을 사용할 수 있다
 
 
-## 리스너(Listener) 혹은 콜백(Callback)
-리스너와 콜백도 결국엔 List나 Map과 같은 자료구조를 통해 저장해두는데, 이를 등록만 하고 명확히 해제하지 않는 경우 메모리 누수가 발생한다
+### 리스너(Listener) 혹은 콜백(Callback)
+리스너와 콜백도 결국엔 List나 Map과 같은 자료구조를 통해 저장해두는데, 이를 등록만 하고 명확히 해제하지 않는 경우 메모리 누수가 발생한다<br>
 이럴 때 콜백을 약한 참조(Weak reference)를 활용하면 해결할 수 있다
 
 (마찬가지로 Reference에 대한 내용은 아래에서 자세히 다루도록 한다)
-
-
-
+<br>
+<br>
+<br>
 ## Reference 종류
 - **Strong Reference**
     - 우리가 흔히 사용하는 '=' 을 사용하여 할당하는 경우
