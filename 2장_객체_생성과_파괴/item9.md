@@ -1,11 +1,11 @@
 
 자바 라이브러리에서 close 메서드를 호출해 직접 닫아줘야 하는 자원 예시 : InputStream, OutputStream, java.sql.Connection 등
-<br>자원 닫기는 예측할 수 없는 성능 문제로 이어져 finalizer을 사용하지만 썩 믿음직스럽지 못하다.
 
+<br>자원 닫기는 예측할 수 없는 성능 문제로 이어져 finalizer을 사용하지만 썩 믿음직스럽지 못하다.
 
 #### 코드 9-1. try-finally 더 이상 자원을 회수하는 최선의 방책이 아니다.
 
-```
+```java
 public static String firstLineOfFile(String path) throw IOException {
     BufferedReader br = new BufferedReader(new FileReader(path));
     try {
@@ -18,7 +18,7 @@ public static String firstLineOfFile(String path) throw IOException {
 
 #### 코드 9-2. 자원이 둘 이상이면 try-finally 방식은 너무 지저분하다!
 
-```
+```java
 static void copy(String src, String dst) throws IOException {
 	InputStream in = new FileInputStream(src);
 	try {
@@ -44,11 +44,12 @@ static void copy(String src, String dst) throws IOException {
 
 ### 해결책 : try-with-resources
 이 구조를 사용하려면 해당 자원이 AutoCloseable 인터페이스(단순히 void를 반환하는 close 메소드 하나만 정의한 인터페이스)를 구현해야 한다. 
+
 자바 라이브러리와 서드파티 라이브러리들의 수많은 클래스와 인터페이스가 이미 AutoCloseable을 구현하거나 확장해뒀다.    
 
 #### 코드 9-3 try-with-resource 자원을 회수하는 최선책! (코드 9-1 재작성)
 
-```
+```java
 public static String firstLineOfFile(String path) throw IOException {
     try (BufferedReader br = new BufferedReader(new FileReader(path))){
         return br.readLine();
@@ -58,7 +59,7 @@ public static String firstLineOfFile(String path) throw IOException {
 
 #### 코드 9-4 복수의 자원을 처리하는 try-with-resources 짧고 매혹적이다! (코드 9-2에 적용한 모습)
 
-```
+```java
 static void copy(String src, String dst) throws IOException {
 	try (InputStream in = new FileInputStream(src);
 		OutputStream out = new FileOutputStream(dst)) {
@@ -78,7 +79,7 @@ static void copy(String src, String dst) throws IOException {
 
 
 #### 코드 9-5 try-with-resouces를 catch절과 함께 쓰는 모습
-```
+```java
 public static String firstLineOfFile(String path) throw IOException {
     try (BufferedReader br = new BufferedReader(new FileReader(path))) {
         return br.readLine();
@@ -98,7 +99,7 @@ public static String firstLineOfFile(String path) throw IOException {
 ### 왜 try-with-resources를 써야하나요?
 
 p48. 자바 퍼즐러 예외 처리 코드의 실수
-```
+```java
 public class Copy {
     private static final int BUFFER_SIZE = 8 * 1024;
 
@@ -128,7 +129,7 @@ public class Copy {
 IOException이 아닌 RuntimeException이 발생하면 out.close()에서 끝남. 
 
 p49. try-with-resources 바이트코드
-```
+```java
 public class TopLine{
 	public TopLine(){
     }
