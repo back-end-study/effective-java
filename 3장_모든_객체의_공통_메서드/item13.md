@@ -5,6 +5,22 @@
 
 복제해도 되는 클래스임을 명시하는 믹스인 인터페이스이다.
 
+### 믹스인 클래스란?
+
+```java
+public interface Singer {
+    String sing(String s);
+}
+
+interface Songwriter {
+    String compose(boolean hit);
+}
+
+interface SingerSongwriter extends Singer, Songwriter {
+    void actSensitive();
+}
+
+```
 
 ```java
 public interface Cloneable{
@@ -129,8 +145,8 @@ deepCopy를 재귀적으로 호출 하는 대신 반복자를 쓰도록 순회�
 
 1. 상속용 클래스는 cloneable을 구현해서는 안된다.
 2. Object의 방식을 모방하여 clone() 메서드를 구현해 protected로 두고 ClassNotSupportedException을 던지도록 선언한다
-   1.  cloneable 구현 여부를 하위클래스에 선택하도록 여지를 준다.
-3. cloneable을 구현한 thread-safe한 클래스를 작성할 때는 clone 메서드는 적절히 동기화 해줘야한다.
+   1. cloneable 구현 여부를 하위클래스에 선택하도록 여지를 준다.
+3. cloneable을 구현한 thread-safe한 클래스를 작성할 때는 clone 메서드는 적절히 동기화 해줘야한다. 
 → Object의 clone 메서드는 동기화를 신경 쓰지 않는다. 그러므로 동기화 해줘야한다.
 
 ## 내용 정리
