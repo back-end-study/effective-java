@@ -6,7 +6,7 @@
 - 이 메서드는 Object 메서드가 아니다.
 - 이 메서드의 성격은 Object의 equals와 유사하지만 아래와 같은 차이가 있음
     - 동치성 비교 뿐 아니라, 순서까지 비교가 가능
-    - 제네릭하다 (?)
+    - 제네릭하다
 
 > Comparable을 구현했다는 것은 순서가 있음을 뜻함
 
@@ -28,7 +28,7 @@ Comparable 을 구현한 객체는 다음 규약들을 지켜야 한다.
 - 해당객체와 주어진 객체가 같을경우 **0**을 반환
 - 해당 객체와 비교할 수 없는 타입의 객체가 전달되면 `ClassCastException`이 발생
 
-### 1-1. **대칭성 보장**
+### 1-1. 대칭성 보장
 
 - 모든 x, y클래스에 대해서 `sgn(x.compareTo(y) == -sgn(y.compareTo(x))` 이다.
 - `x.compareTo(y)`는 `y.compareTo(x)`가 예외를 던질 때에 한해서 예외가 발생해야 한다.
@@ -41,7 +41,7 @@ System.out.println(n1.compareTo(n2));
 System.out.println(n2.compareTo(n1));
 ```
 
-### 1-2. **추이성 보장**
+### 1-2. 추이성 보장
 
 객체 `x`, `y`, `z`가 있다고 할 때
 
@@ -49,7 +49,7 @@ System.out.println(n2.compareTo(n1));
 - (x > y && y > z 이면 x > z여야 한다.)
 - x.compareTo(y) == 0 일 때 sgn(x.compareTo(z)) == sgn(y.compareTo(z))이어야 한다.
 
-### 1-3. **반사성 보장 (equlas 규약과 동일)**
+### 1-3. 반사성 보장 (equlas 규약과 동일)
 
 - null이 아닌 모든 참조 값(n1)에 대해 아래 n1.compareTo(n1)은 true
 
@@ -101,7 +101,7 @@ false
     public final class PhoneNumber implements Comparable<PhoneNumber> {
         private short areaCode, prefix, lineNum;
     
-    		// 기본 타입 필드가 여럿일 때의 비교자 (91page)
+    	// 기본 타입 필드가 여럿일 때의 비교자 (91page)
         @Override
         public int compareTo(PhoneNumber pn) {
             int result = Short.compare(areaCode, pn.areaCode);
@@ -147,9 +147,9 @@ public final class PhoneNumber implements Comparable<PhoneNumber> {
 
 ```java
 static Comparator<Object> hashCodeOrder = new Comparator<>() {
-		public int compare(Object 01, Object 02) {
-				return ol.hashCode() - o2.hashCode();
-		}
+	public int compare(Object 01, Object 02) {
+		return ol.hashCode() - o2.hashCode();
+	}
 }
 ```
 
@@ -158,19 +158,97 @@ static Comparator<Object> hashCodeOrder = new Comparator<>() {
 대신, 다음처럼 정적 compare메서드 혹은 비교자 생성 메서드를 활용해보자.
 
 ```java
-static Comparator<Object hashCodeOrder = new Comparator<>(){
-		public int compare(Object o1, Object 02){
-				return Integer.compare(01.hashCode(), o2.hashCode());
-		}
+static Comparator<Object hashCodeOrder = new Comparator<>() {
+	public int compare(Object o1, Object 02){
+		return Integer.compare(01.hashCode(), o2.hashCode());
+	}
 }
 ```
 
 ```java
 static Comparator<Object> hashCodeOrder = 
-				Comparator.comparingInt(Object::hashCode);
+		Comparator.comparingInt(Object::hashCode);
 ```
 
-# 3. 정리
+## 3️⃣ Comparable 구현 클래스를 확장할 때 주의점
+
+> 기존 클래스를 확장한 구체 클래스에서 새로운 값 컴포넌트를 추가했다면 compareTo 규약을 지킬 방법이 없다.
+
+객체 지향적 추상화의 이점을 포기해서 `뷰 메서드`를 활용해 우회한 코드는 아래와 같다.
+
+`Point 클래스`
+
+```java
+class Point implements Comparable<Point> {
+    private int x;
+    private int y;
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public int compareTo(Point point) {
+        int result = Integer.compare(x, point.x);
+        if (result == 0) {
+            return Integer.compare(y, point.y);
+        }
+        return result;
+    }
+}
+```
+
+`NamedPoint 클래스`
+
+```java
+class NamedPoint implements Comparable<NamedPoint> {
+    // 원래 클래스의 인스턴스를 가르키는 필드
+    private Point point;
+
+    private String name;
+
+    public NamedPoint(Point point, String name) {
+        this.point = point;
+        this.name = name;
+    }
+    // 내부 인스턴스를 반환하는 '뷰' 메서드
+    public Point viewPoint() {
+        return point;
+    }
+
+    @Override
+    public int compareTo(NamedPoint namePoint) {
+        int result = point.compareTo(namePoint.point);
+        if (result == 0) {
+            return name.compareTo(namePoint.name);
+        }
+        return result;
+    }
+}
+```
+
+이렇게 하면 NamedPoint 클래스에 원하는 compareTo 메서드를 새롭게 구현할 수 있게 되어 구체 클래스 Point에서 compareTo 일반 규약을 지킬 수 있게 된다.
+
+Test 코드로 검증하면 아래와 같다.
+
+```java
+class PointTest {
+
+    @DisplayName("compareTo의 일반 규약을 지킬 수 있다")
+    @Test
+    void test() {
+        Point point = new Point(1, 3);
+        NamedPoint namedPoint = new NamedPoint(new Point(1, 2), "food");
+
+        assertThat(point.compareTo(namedPoint.viewPoint())).isEqualTo(1);
+        assertThat(namedPoint.viewPoint().compareTo(point)).isEqualTo(-1);
+    }
+
+}
+```
+
+## 4️⃣ 정리
 
 - 순서를 고려해야하는 값 클래스는 Comparable인터페이스를 꼭 구현하면 좋다.
 - compareTo 메서드에서는 `<` , `>`같은 연산자는 쓰지 않아야 한다.
