@@ -2,6 +2,12 @@
 
 중첩클래스
 
+> 다른 클래스 안에 정의된 클래스
+
+- 중첩 클래스는 자신을 감싼 바깥 클래스에서만 사용되어야한다
+- 불필요한 노출을 줄여 캡슐화 할수있고, 가독성, 유지보수하기 좋은코드를 작성할수있다.
+
+### 종류
 - static 멤버 클래스
 - non-static 멤버 클래스
 - 익명 클래스
@@ -113,6 +119,7 @@ public class OuterClass {
 
 - static문맥에서 사용될때엔 static 변수외의 필드는 가질수없다.
 
+- static 팩터리 메서드를 만들때 사용되기도 한다
 ```java
 static List<Integer> intArrayAsList(int[] a) {
 
@@ -133,8 +140,6 @@ static List<Integer> intArrayAsList(int[] a) {
 	}
 }
 ```
-
-- static 팩터리 메서드를 만들때 사용되기도 한다
 
 ## 지역클래스
 
