@@ -113,6 +113,27 @@ public class OuterClass {
 
 - static문맥에서 사용될때엔 static 변수외의 필드는 가질수없다.
 
+```java
+static List<Integer> intArrayAsList(int[] a) {
+
+	Objects.requireNonNull(a);
+	return new AbstractList<>() {
+		@Override
+		public Interger get(int i) { return a[i]; }
+	
+		@Override
+		public Integer set(int i, Integer val) {
+			int oldVal = a[i];
+			a[i] = val;
+			return oldVal;
+		}
+
+		@Override
+		public int size() { return a.length; }
+	}
+}
+```
+
 - static 팩터리 메서드를 만들때 사용되기도 한다
 
 ## 지역클래스
@@ -146,3 +167,5 @@ public class OuterClass {
 ### 정리
 
 - 바깥 클래스를 참조할일이 없다면 static멤버클래스로 만들어라 (non-static으로 만든다면 쓸데없는 외부참조가생겨 낭비가 생긴다)
+
+- 메서드 밖에서도 사용해야하거나 메서드안에 정의하기엔 너무 길다면 멤버클래스로 만든다.
