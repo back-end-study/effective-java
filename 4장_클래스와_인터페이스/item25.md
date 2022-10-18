@@ -6,7 +6,7 @@
 ### Why?
 어느 소스 파일을 먼저 컴파일 하느냐에 따라 작동이 달라지기 때문이다.
 
-아래 예시를 봐보자
+아래는 같이 소스파일 하나에 톱레벨 클래스가 여러개 담긴것에 대한 예시이다.
 
 ```java
 // Utensil.java
@@ -54,6 +54,25 @@ public class Main {
 
 ### 해결방안
 1. 톱레벨 클래스들을 정적 멤버 클래스를 이용하여 서로다른 클래스로 분리해보자
+
+```java
+// 정적 멤버 클래스 적용
+public class Main {
+	 public static void main(String[] args) {
+			 System.out.println(Utensil.NAME + Dessert.NAME);
+	 }
+
+	 private static class Utensil {
+			 static final String NAME = "PAN";
+	 }
+
+	 private static class Dessert {
+			 static final String NAME = "CAKE";
+	 }
+}
+```
+
+
 2. 인텔리제이가 빨간글씨로 문제가 있다고 알려준다..!
 
 
