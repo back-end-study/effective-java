@@ -6,13 +6,13 @@
   - `List<Object>`는`List<Long>`와 호환되지않는다.
 
 ```java
-		// 런타임 시점에 확인됨(컴파일이 된다는문제)
-        Object[] array = new Long[1];
-        array[0] = "타입이 달라 넣을수 없음"; // 런타임 ArrayStoreException 예외
+// 런타임 시점에 확인됨(컴파일이 된다는문제)
+Object[] array = new Long[1];
+array[0] = "타입이 달라 넣을수 없음"; // 런타임 ArrayStoreException 예외
         
-        // 컴파일 시점에 확인됨
-        List<Object> list = new ArrayList<Long>(); // 컴파일 에러
-        list.add("타입이 달라 넣을수 없음");        
+// 컴파일 시점에 확인됨
+List<Object> list = new ArrayList<Long>(); // 컴파일 에러
+list.add("타입이 달라 넣을수 없음");        
 ```
 
 ### 2.  배열은 런타임에도 원소의 타입을 인지하지만 제네릭은 런타임에는 타입정보가 소거(erasure)된다.
