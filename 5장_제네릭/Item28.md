@@ -93,7 +93,7 @@ public class Chooser<T> {
 
     public Object choose() {
         Random rnd = ThreadLocalRandom.current();
-        return choiceArray.get(rnd.nextInt(choiceArray.size())); // 런타임오류 발생
+        return choiceArray.get(rnd.nextInt(choiceArray.size()));
     }
 
     public static void main(String[] args) {
