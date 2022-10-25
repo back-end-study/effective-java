@@ -1,88 +1,105 @@
-## 한정적 와일드카드를 사용하여 API 유연성을 눂혀라
+## 한정적 와일드카드를 사용하여 API 유연성을 높혀라
 
 매개 변수화 타입은 불공변이다. 즉 서로 다른 타입 TypeA 와 TypeB가 있을 때 List<TypeA> 는 List<TypeB>의 하위타입도 상위타입도 아니다.
 
 하지만 이러한 불공변 방식보다, 유연한 타입체크가 필요할 수 있다.
 
-아래 예시를 봐보자
+아래 예시를 보자
 
 ```java
 public void pushAll(Iterable<E> src){
         for(E e:src){
-        push(e);
+            push(e);
         }
 }
 
 public static void main(String[]args){
-        Stack<Number> stack=new Stack<>();
-        Iterable<Integer> integers=new...;
+        Stack<Number> stack = new Stack<>();
+        Iterable<Integer> integers = new...;
         stack.pushAll(integers); // 컴파일 오류 발생
 }
 ```
 
-Number와 Integer는 상속관계에 있지만, Iterable<Integer>는 Iterable<Number>의 하위 타입이 아니기 때문에
-컴파일 오류가 발생하게 된다.
+Number와 Integer는 상속관계에 있지만, 불공변이기 때문에  컴파일 오류가 발생하게 된다.
 
-### 상한경계와일드 카드를 이용해서 해결이 가능하다. !
+### 상한 경계 와일드 카드
 
 ```
-<? extend T>
+상한경계 와일드 카드란?
 
+<? extend T>
 들어오는 타입의 경우 T의 자식 객체 타입이여 한다.
 ```
 
-위와 같이 상한경계 와일드 카드를 이용하게 되면, 컴파일이 안되는 문제를 해결 할 수 있다.
+상한경계 와일드 카드를 이용하게 되면, 컴파일이 안되는 문제를 해결 할 수 있다.
+
+
+```java
+//  성공
+public void pushAll(Iterable<? Extends E> src) {
+        for(E e:src){
+            push(e);
+        }
+}
+
+```
+
+### 하한경계 와일드 카드
 
 그럼 하한경계 와일드 카드를 사용하는 예시도 봐보자.
+
+```
+하한경계 와일드 카드란?
+
+<? super T>
+들어오는 타입의 경우 T or 부모 객체 타입이여 한다.
+```
+
+
 
 ```java
 public void popAll(Collection<E> dst){
         while(!isEmpty()){
-        dst.add(pop()); // compile error 
+            dst.add(pop()); // compile error
         }
 }
 
-public static void main(String[]args){
-        Stack<Number> stack=new Stack<>();
-        Collection<Object> objects=new...;
+public static void main(String[]args) {
+        Stack<Number> stack = new Stack<>();
+        Collection<Object> objects = new...;
         stack.popAll(objects); // 컴파일 오류발생
 }
-```
-
-위 예시를 보게 되면 Collection<Object>와 Collection<Number>는 아무 관계가 없으므로 컴파일 오류가 발생하게 된다
-
-### 하한경게 와일드 카드를 통해서 해결이 가능하다.
 
 ```
-<? super T>
 
-들어오는 타입의 경우 T or 부모 객체 타입이여 한다.
-```
 
 ```java
-public void popAll(Collection<? super E>dst){
+//  성공
+public void popAll(Collection<? super T> dst){
         while(!isEmpty()){
-        dst.add(pop());
+            dst.add(pop());
         }
 }
 ```
+
 
 위와 같이 하한경계 와일드 카드를 이용하면 컴파일 오류로부터 벗어나게 된다.
 
 ## PECS (producer - extends, consumer-super)
 
-책에서는 extends와 super를 어떤 상횡에서 쓰먄좋읗지 PECS라는 말로 설명해주고 있다.
+책에서는 extends와 super를 어떤 상횡에서 쓰면 좋읗지 PECS라는 말로 설명해주고 있다.
 
 ### PECS란?
 
 매개변수 타입이
-T가 생산자(producer)인 경우 상한 경계 와일드 카드(extends) 를 사용하고
+T가 생산자(producer)인 경우 상한 경계 와일드 카드(extends) 를 사용하고,
+
 T가 소비자(consumer)이면 하한 경계 와일드 카드(super)를 사용해라
 
 ```java
 public void pushAll(Iterable<E> src){
-        for(E e:src){
-        push(e);
+        for(E e:src) {
+            push(e);
         }
 }
 ```
@@ -92,7 +109,7 @@ public void pushAll(Iterable<E> src){
 ```java
 public void popAll(Collection<? super E>dst){
         while(!isEmpty()){
-        dst.add(pop());
+            dst.add(pop());
         }
 }
 ```
@@ -111,14 +128,22 @@ public static <E extends Comparable<E>> E max(List<E> list)
 ```java
 public static <E extends Comparable<? super E>> E max(List<? extends E> list)
 ```
-이 메서드는 E 타입을 List를 인자로 받은 후, 받은 List중에서 가장 큰 값을 리턴하는 메서드이다.
+이 메서드는 E 타입을 List 인자로 받은 후, 받은 List 중 에서 가장 큰 값을 리턴하는 메서드이다.
 그리고 return 값은 comparable 이다.
 
-그럼 해당 메서드에 아래의 값을 넣어보게 되면 
+과연이렇게 복잡한 와일드카드도 쓰일곳이 있을까?
+
+=> 쓰일곳이 있다.
+
+
+당 메서드에 아래의 값을 넣어보게 되면 
+
 ```java
 List<ScheduledFuture<?>> scheduledFutures = new ArrayList<>();
 ```
+
 수정전 메서드는 위의 값을 처리하지 못한다.
+
 그 이유는 매개변수 타입의 불공변 때문에 처리하지 못하게 된다.
 
 ### 수정 전
@@ -155,19 +180,22 @@ public static void swap(List<?> list,int i,int j);
 ```
 
 1번의 경우 비한정적 타입매개변수이고,
+
 2번의 경우 비한정적 와일드카드방식이다.
 
-만약 publicAPI라고 하면 비한정적 와일드 카드타입이 낫다.
+
+만약 publicAPI 라고 하면 비한정적 와일드 카드타입이 낫다.
+
 그 이유는 신경써야 할 타입 매게변수가 없기 때문이다.
 
-그래서 기본규칙으로는 타입 매개변수가 한번만 나오면 와일드 카드로 대체하라
-이때
+
+기본규칙으로는 타입 매개변수가 한번만 나오면 와일드 카드로 대체해라
 
 1. 비한정적타입 매개변수라면 비한정적 와일드카드로,
 2. 한정적타입매개변수 라면 한정적 와일드카드로
    바꾸면 된다.
 
-하지만 직관적으로 구현한 2번은 컴파일 되지 않는다.
+하지만 직관적으로 구현한 2번(swap)은 컴파일 되지 않는다.
 
 ```java
 public static void swap(List<?> list,int i,int j){
@@ -175,7 +203,8 @@ public static void swap(List<?> list,int i,int j){
 }
 ```
 
-방금 꺼낸 원소를 다시 리스트에 넣을 수 없는 상황이다 
+방금 꺼낸 원소를 다시 리스트에 넣을 수 없는 상황이다
+
 이유는 리스트 타입이 List<?> 이기 때문이다, List<?> 에는 null 외에는 어떤 값도 add 할 수 수 없기 때문이다.
 
 
@@ -193,4 +222,5 @@ public static void swap(List<?> list,int i,int j){
 ```
 
 swapHelper 메서드는 리스트가 List<E>임을 알고 있다. 
+
 즉 이 리스트에서 꺼낸 값은 항상 E이고, E 타입의 값이라면 이 리스트에 넣어도 안전함을 알고 있다.
