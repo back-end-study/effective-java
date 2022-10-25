@@ -116,10 +116,18 @@ public static <E extends Comparable<? super E>> E max(List<? extends E> list)
 
 그럼 해당 메서드에 아래의 값을 넣어보게 되면 
 ```java
-List<ScheduledFutuer<?>> scheduledFutures = ...;
+List<ScheduledFuture<?>> scheduledFutures = new ArrayList<>();
 ```
 수정전 메서드는 위의 값을 처리하지 못한다.
 그 이유는 매개변수 타입의 불공변 때문에 처리하지 못하게 된다.
+
+### 수정 전
+
+![img_1.png](img_1.png)
+
+### 수정 후
+
+![img.png](img.png)
 
 그래서 비록 수정 후의 방법이 복잡하더라도 의미가 있는 방법이다.
 
@@ -133,12 +141,11 @@ interface ScheduledFuture<V> extends Delayed, Future<V>
 
 
 
-### 타입 매게변수 or 와일드 카드
+### 타입 매개변수 or 와일드 카드
 
-타입매게변수와 와일드 카드는 공통되는 부분이 있어, 둘중 어느것을 사용해도 괜찮을 때가 있다.
+타입매개변수와 와일드 카드는 공통되는 부분이 있어, 둘중 어느것을 사용해도 괜찮을 때가 있다.
 
-아래 예시 swap 이란 것이 있다.
-해당 메서드는 리스트에 명시한 두인덱스와 아이템들을 swap하는 메서드이다.
+아래 예시  메서드에 대해서 간단하게 설명하자면 리스트에 명시한 두인덱스와 아이템들을 swap하는 메서드이다.
 
 ```java
 public static<E> void swap(List<E> list,int i,int j);
@@ -167,17 +174,22 @@ public static void swap(List<?> list,int i,int j){
 }
 ```
 
-방금 꺼낸 원소를 다시 리스트에 넣을 수 없는 상황인데, 그 이유는 리스트 타입이 List<?> 인데, List<?> 에는 null외에는 어떤 값도 넣을 수 없기 때문이다.
+방금 꺼낸 원소를 다시 리스트에 넣을 수 없는 상황이다 
+이유는 리스트 타입이 List<?> 이기 때문이다, List<?> 에는 null 외에는 어떤 값도 add 할 수 수 없기 때문이다.
+
 
 이런 경우에는 ***와일드 카드 타입의 실제 타입을 알려주는 메서드를 private 도우미 메서드*** 로 따로 작성하는것이다.
 
 ```java
-public static void swap(List<?> list,int i,int j){
-        swapHelper(list i,j);
-}
+    public static void swap(List<?> list, int i, int j) {
+        swapHelper(list, i, j);
+    }
 
-private static<E> volid swapHelper(List<E> list,int i,int j){
-        list.set(i,list.set(j,list.get(i)));
-}
+    private static <E> void swapHelper(List<E> list, int i, int j) {
+        list.set(i, list.set(j, list.get(i)));
+    }
+
 ```
-swapHelper 메서드는 리스트가 List<E>임을 알고 있다. 즉 이 리스트에서 꺼낸 값은 항상 E이고, E 타입의 값이라면 이 리스트에 넣어도 안전함을 알고 있다.
+
+swapHelper 메서드는 리스트가 List<E>임을 알고 있다. 
+즉 이 리스트에서 꺼낸 값은 항상 E이고, E 타입의 값이라면 이 리스트에 넣어도 안전함을 알고 있다.
