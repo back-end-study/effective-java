@@ -123,11 +123,12 @@ List<ScheduledFuture<?>> scheduledFutures = new ArrayList<>();
 
 ### 수정 전
 
-![img_1.png](img_1.png)
+![image](https://user-images.githubusercontent.com/43979984/197767795-e85bc100-ae02-41ab-bb7c-1cf02e06471e.png)
+
 
 ### 수정 후
 
-![img.png](img.png)
+![스크린샷 2022-10-25 오후 8 37 16](https://user-images.githubusercontent.com/43979984/197767536-9ac21deb-396e-439b-87f3-25df62c1a0fc.png)
 
 그래서 비록 수정 후의 방법이 복잡하더라도 의미가 있는 방법이다.
 
