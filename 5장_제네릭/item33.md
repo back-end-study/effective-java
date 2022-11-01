@@ -5,45 +5,40 @@
 2. 단일원소 컨테이너
     1. ex) ThreadLocal<T>, AtomicReference<T> 등
 
-❓  이런 쓰임에서 매개변수화되는 대상은 (원소가 아닌) 컨테이너 자신이다.
+이런 쓰임에서 매개변수화되는 대상은 (원소가 아닌) 컨테이너 자신이다.
 
-- 매개변수화 용어가 어지럽네
+- 용어 정리
     - 매개변수화 타입(parameterized type) → ThreadLocal
     - 제네릭 클래스 → ThreadLocal.class
     - 제네릭 타입 → ThreadLocal
     - 원소 : <T> 
-    - 💡 매개변수화 타입 = 제네릭 타입 = 로타입 ???
-
 
 ### 1-1. 문제 상황 (다이나믹한 매개변수 타입 개수)
 
 > 하나의 컨테이너에서 매개변수화 할 수 있는 타입의 수가 제한된다.
->
 
 **요구사항**
 
 - 데이터베이스의 행(row)은 임의 개수의 열(column)을 가질 수 있음
-- 각 행은 열을 타입 안전하게 이용해야한다.
+- 각 행은 열을 타입 안전해야 함
 
 ## 2. 타입 안전 이종 컨테이너 패턴
 
 > Type safe heterogeneous container pattern
-
 
 - 컨테이너 대신 키를 매개변수화한다.
 - 컨테이너에 값을 넣거나 뺄 때 매개변수화한 키를 함께 제공한다.
 
 > `값의 타입 = key` 보장
 
-
 ### 2-1. 예시 코드 (Favorites 클래스)
 
 Type 별로 즐겨 찾는 인스턴스를 저장하고 검색할 수 있는 Favorites 클래스
 
-- 각 Type의 Class 객체를 매개변수화한 키 역할로 사**용하면 됨**
+- 각 Type의 Class 객체를 매개변수화한 키 역할로 사용하면 됨
 
-> **Q) 이 방식이 동작하는 이유?
-A) class의 클래스가 제네릭이기 때문이다**
+> Q) 이 방식이 동작하는 이유?  
+> A) class의 클래스가 제네릭이기 때문
 
 
 ```java
@@ -53,9 +48,8 @@ public class Favorites {
 }
 ```
 
-키가 매개변수화 되었다 → `Class<T> type`??
-
-클라이언트는 즐겨찾기를 저장하거나 얻어올 때 Class 객체를 알려주면 된다.
+- 키가 매개변수화 되었다 → `Class<T> type`
+- 클라이언트는 즐겨찾기를 저장하거나 얻어올 때 Class 객체를 알려주면 된다.
 
 ```java
 public class Client {
@@ -77,13 +71,10 @@ public class Client {
 ```
 
 - 즐겨 찾는 String, Integer, Class 인스턴스를 put/get
-
-String.class의 타입 → Class<String>
-
-Integer.class의 타입 → Class<Integer>
-
+	- String.class의 타입 → Class<String>
+	- Integer.class의 타입 → Class<Integer>
 - Favorites 인스턴스는 Type Safe
-- Map과 비슷하지만 여러 type의 원소를 담을 수 있다.
+- Map과 비슷하지만 여러 type의 원소를 담을 수 있다
 
 Favoites API 구현은 아래와 같다.
 
@@ -101,22 +92,21 @@ public class Favorites {
 }
 ```
 
-- `Map<Class<?>, Object>`는 비한정적 와일드카드 타입이라 아무것도 넣을 수 없다고 생각할 수 있지만?
-- 와일드카드 type이 중첩(nested)되었기 때문에 Map이 아니라 Key가 와일드카드 type이다.
+- `Map<Class<?>, Object>`는 비한정적 와일드카드 타입이라 아무것도 넣을 수 없다고 생각할 수 있지만 아니다
+- 와일드카드 type이 중첩(nested)되었기 때문에 Map이 아니라 Key가 와일드카드 type이다
 - 이는 모든 키가 서로 다른 매개변수화 타입일 수 있다는 뜻
 
 ### 2-2. putFavorite 메서드 구현
 
 ![image](https://user-images.githubusercontent.com/42997924/199226280-c6252327-4d50-40d5-aa1e-3ed6c8702634.png)
 
-타입 안정 이종 컨테이너의 활용과 컴파일 에러
+(↑ 타입 안정 이종 컨테이너의 활용과 컴파일 에러)
 
 책에는 아래와 같이 명시되어있다.
 
 > 200p 이 맵은 키와 값 사이의 타입 관계를 보증하지 않는다는 말이다.  
-즉, 모든 값이 키로 명시한 타입임을 보증하지 않는다.  
-사실 자바의 타입 시스템에서는 이 관계를 명시할 방법이 없다.  
->
+> 즉, 모든 값이 키로 명시한 타입임을 보증하지 않는다.  
+> 사실 자바의 타입 시스템에서는 이 관계를 명시할 방법이 없다.  
 
 하지만, 위 코드 샘플과 컴파일 에러를 확인해보면 키와 값 사이의 타입 관계를 보증하는 것처럼 보인다.
 
@@ -126,10 +116,10 @@ Java 버전이 올라가면서 추가된 것인지, `보증하지 않는다`는 
 
 ### 2-3. **getFavorite 메서드** 구현
 
-```kotlin
-    public <T> T getFavorite(Class<T> type) {
-        return type.cast(favorites.get(type));
-    }
+```java
+public <T> T getFavorite(Class<T> type) {
+	return type.cast(favorites.get(type));
+}
 ```
 
 - Class 객체에 해당하는 값을 favorites Map에서 꺼낸다
@@ -149,17 +139,17 @@ java.lang.Class → cast 메서드
 
 <img width="649" alt="image" src="https://user-images.githubusercontent.com/42997924/199229211-5cb71b23-19f7-447e-88e3-bcbb537d16fa.png">
 
-로 타입으로 Class 객체를 넘긴 클라이언트 코드
+(↑ 로 타입으로 Class 객체를 넘긴 클라이언트 코드)
 
 <img width="626" alt="image" src="https://user-images.githubusercontent.com/42997924/199229156-e3cbd984-089c-4bca-a34b-4fb36a733165.png">
 
-ClassCastException 발생
+(↑ ClassCastException 발생)
 
 - 클라이언트 코드에 비검사 경고를 띄우고 런타임 에러가 발생한다.
 - HashSet, HashMap에서도 같은 제약이 있다.
 - 예를 들면, 아래 코드도 컴파일된다. (꺼내기 전까지 에러 발생하지 않음)
 
-    ```kotlin
+    ```java
     HashSet<Integer> set = new HashSet<>();
     ((HashSet)set).add("문자열 넣어버리기~");
     ```
@@ -171,7 +161,7 @@ Favorites 객체가 타입 불변식을 어기는 일이 없도록 보장하려�
 
 <img width="1143" alt="image" src="https://user-images.githubusercontent.com/42997924/199230557-cff0a5f2-d36a-4d51-b672-8fdf305cfdc2.png">
 
-동적 형변환으로 런타임 타입 안전성 확보
+(↑ 동적 형변환으로 런타임 타입 안전성 확보)
 
 instance의 타입이 type으로 명시한 타입과 같은지 체크해주면 put할 때 ClassCastException을 발생시킨다.
 
@@ -181,9 +171,8 @@ instance의 타입이 type으로 명시한 타입과 같은지 체크해주면 p
 - `public static <E> List<E> checkedList(List<E> list, Class<E> type)`
 - 위 메서드에서 실체화도 해주기 때문에 클라이언트에서 로 타입을 넣을 수 없게 한다.
 
-> 📌  실체화란
-런타임에도 자신이 담기로 한 원소의 타입을 인지하고 확인 함
->
+> 📌  실체화란  
+> 런타임에도 자신이 담기로 한 원소의 타입을 인지하고 확인 함
 
 ### 2-6. 두 번째 제약 : 실체화 불가 타입에는 사용 불가
 
@@ -226,7 +215,7 @@ public <T extends Annotation> T getAnnotation(Class<T> annotationType);
             - (형변환된다는 것은 이 클래스가 인수로 명시한 클래스의 하위 클래스라는 뜻)
 
 ```java
-// [코드 33-5] asSubclass를 사용해 한정적 타입 토큰을 안전하게 형변환한다.
+// asSubclass를 사용해 한정적 타입 토큰을 안전하게 형변환한다.
 // 타입을 알 수 없는 애너테이션을 asSubclass 메서드를 사용하여 런타임을 읽어내는 예시
 static Annotation getAnnotation(AnnotatedElement element, String annotationTypeName) {
 	Class<?> annotationType = null; // 비한정적 타입 토큰
@@ -241,11 +230,11 @@ static Annotation getAnnotation(AnnotatedElement element, String annotationTypeN
 
 ## 4. 핵심 정리
 
-> 일반적인 제네릭 형태에서는 한 컨테이너가 다룰 수 있는 타입 매개변수의 수가 고정되어 있다.
-그러나 컨테이너 자체가 아닌 `키를 타입 매개변수로 바꾸면` 이런 제약이 없는 타입 안전 이종 컨테이너를 만들 수 있다.
-
-타입 안전 이종 컨테이너는 Class를 키로 쓰며, 이러한 Class 객체를 타입 토큰이라 부른다.
-또한 직접 구현한 키 타입도 사용 가능하다.
+> 일반적인 제네릭 형태에서는 한 컨테이너가 다룰 수 있는 타입 매개변수의 수가 고정되어 있다.  
+> 그러나 컨테이너 자체가 아닌 `키를 타입 매개변수로 바꾸면` 이런 제약이 없는 타입 안전 이종 컨테이너를 만들 수 있다.  
+>   
+> 타입 안전 이종 컨테이너는 Class를 키로 쓰며, 이러한 Class 객체를 타입 토큰이라 부른다.  
+> 또한 직접 구현한 키 타입도 사용 가능하다.
 
 ### 궁금증) 제네릭의 타입 추론은 어떻게 동작할까?
 
