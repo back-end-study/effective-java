@@ -1,8 +1,5 @@
 # [Item-34] int 상수 대신 열거 타입을 사용하라
 
-배정: 김세용
-상태: Effective Java 3E
-
 Java에서 Enum을 지원하기 전에는 아래와 같이 정수 상수를 한 곳에 선언해서 사용하곤 했다
 
 ```java
@@ -215,13 +212,13 @@ public enum Operation {
     for (Operation op : Operation.values()) {
         System.out.printf("%f %s %f = %f%n", x, op, y, op.apply(x,y));
     }
-		/** 실행 결과
-		2.000000 + 4.000000 = 6.000000
-		2.000000 - 4.000000 = -2.000000
-		2.000000 * 4.000000 = 8.000000
-		2.000000 / 4.000000 = 0.500000
-		**/
-	}
+    /** 실행 결과
+    2.000000 + 4.000000 = 6.000000
+    2.000000 - 4.000000 = -2.000000
+    2.000000 * 4.000000 = 8.000000
+    2.000000 / 4.000000 = 0.500000
+    **/
+    }
 }
 ```
 
@@ -268,11 +265,11 @@ public enum PayrollDay {
         
         int overtimePay;
         switch (this) {
-						// 주말
+            // 주말
             case SATURDAY: case SUNDAY:
                 overtimePay = basePay / 2;
                 break;
-						// 주중
+            // 주중
             default:
                 overtimePay = minutesWorked <= MINS_PER_SHIFT 
                         ? 0
