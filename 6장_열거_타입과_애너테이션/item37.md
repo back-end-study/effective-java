@@ -25,19 +25,17 @@ public class Plant {
 #### 코드 37-1. ordinal()을 배열 인덱스로 사용 - 따라하지 말 것!
 
 ```
-		Set<Plant>[] plantsByLifeCycle = (Set<Plant>[]) new Set[LifeCycle.values().length];
-		for (int i = 0; i < plantsByLifeCycle.length; i++) {
-            plantsByLifeCycle[i] = new HashSet<>();
-            }
-            List<Plant> garden = new ArrayList<>(); // 편의상 빈 리스트로 초기화 했다.
-        for (Plant plant : garden) {
-            plantsByLifeCycle[plant.lifeCycle.ordinal()].add(plant);
-        }
-
-        // 결과 출력
-        for (int i = 0; i < plantsByLifeCycle.length; i++) {
-            System.out.printf("%s : %s%n", Plant.LifeCycle.values()[i], plantsByLifeCycle[i]);
-        }
+Set<Plant>[] plantsByLifeCycle = (Set<Plant>[])new Set[Plant.LifeCycle.values().length];
+for (int i = 0; i < plantsByLifeCycle.length; i++) {
+    plantsByLifeCycle[i] = new HashSet<>();
+}
+for (Plant p : garden) {
+    plantsByLifeCycle[p.lifeCycle.ordinal()].add(p);
+}
+// 결과 출력
+for (int i = 0; i < plantsByLifeCycle.length; i++) {
+    System.out.printf("%s: %s%n", Plant.LifeCycle.values()[i], plantsByLifeCycle[i]);
+}
 ```
 
 동작은 하지만 문제가 있는 코드이다. 배열은 제네릭과 호환되지 않으나(아이템  28) 비검사 형변환을 수행해야 하고 깔끔하게 컴파일되지 않을 것이다.
