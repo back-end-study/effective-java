@@ -46,12 +46,12 @@ return StreamSupport.stream(iterable.spliterator(), false);
 ```
 
 ### Collection VS Stream
-####Collection
+#### Collection
 
 - Collection 인터페이스는 Iterable 인터페이스의 하위 타입이고 
 stream 메서드도 제공하니 일반적으로는 Collection을 반환하는편이 좋다.
 - 하지만 Collection의 각 원소는 메모리에 올라가므로, 시퀀스의 크기가 크다면 고민해보는 것이 좋다.
-####Stream
+#### Stream
 - 컬렉션의 contains와 size를 시퀀스의 내용을 확정하기 전 까지 구할 수 없는 경우(i.e. 실제 반복을 돌려보기 전 까지는 무엇이 얼마나 들어갈지 예측이 불가능한 경우)에는 Stream을 반환하는 것이 좋다.
 
 ### 정리
