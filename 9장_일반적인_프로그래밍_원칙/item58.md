@@ -144,19 +144,22 @@ public class DestructiveFiltering {
 }
 ```
 
+하지만 해당 소스를 실행시켜 보면
+
 ![https://user-images.githubusercontent.com/68587990/204488411-4cbb3e9f-3feb-49ea-932c-2648c0707b84.png](https://user-images.githubusercontent.com/68587990/204488411-4cbb3e9f-3feb-49ea-932c-2648c0707b84.png)
 
 `ConcurrentModificationException` 가 발생한다
 
-자바 8부터는 Collection의 removeIf 메서드를 사용해 컬렉션을 명시적으로 순회를 회피할 수 있다
+자바 8부터는 Collection에 default 메서드로 removeIf 가 등장하였는데, 이 메서드를 사용하면 안전하게 컬렉션에서 요소들을 제거할 수 있다
+
+```java
+people.removeIf(person -> person.age == 20);
+```
 
 Intellij에서도 removeIf를 사용하라고 권장하고 있다
 
 ![https://user-images.githubusercontent.com/68587990/204489012-01f3d14c-885a-4eca-a840-a1262ee7ec61.png](https://user-images.githubusercontent.com/68587990/204489012-01f3d14c-885a-4eca-a840-a1262ee7ec61.png)
 
-```java
-people.removeIf(person -> person.age == 20);
-```
 
 - 변형(transforming)
 
