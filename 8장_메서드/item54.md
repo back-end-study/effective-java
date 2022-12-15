@@ -43,6 +43,19 @@ if (cheeses != null && cheeses.contains(Cheese.M\\ozzarell
 
 > ex) Collections.emptyList, Collections.emptySet, Collections.emptyMap)
 
+
+```java
+public List<Cheese> getCheeses() {
+    return new ArrayList<>(cheesesInStock);
+}
+
+
+public List<Cheese> getCheeses() {
+	return cheesesInStock.isEmtpy() ? Collections.emptyList() 
+		: new ArrayList<>(cheesesInStock);
+}
+```
+
 배열을 사용할 때도 마찬가지이다. 절대 `null` 을 반환하지 말고 길이가 0인 배열을 반환한다.
 
 ```java
