@@ -68,7 +68,7 @@ ConcurrentHashMap과 같이 내부에서 복잡하게 고성능 동시성 제어
 
 또한, 공개된 락을 오래 쥐고 놓지 않는 서비스 거부 공격(deial-of-service attack)을 수행할 수도 있다
 
-따라서 synchronized 메서드 대신 비공개 락 객체를 사용하자
+따라서 synchronized 메서드 대신, 그리고 공개 락 객체를 사용하는 대신 비공개 락 객체를 사용하자
 
 ```java
 // 비공개 락 객체 관용구
@@ -143,11 +143,11 @@ public class Worker extends Thread {
 
 - **예상 실행 결과**
 
-![https://user-images.githubusercontent.com/68587990/209461487-4cbb3532-b010-4e7d-9dac-56dfd626dc00.png](https://user-images.githubusercontent.com/68587990/209461487-4cbb3532-b010-4e7d-9dac-56dfd626dc00.png)
+![https://user-images.githubusercontent.com/68587990/209667128-2b1f844c-012b-4af4-92d6-1710ef7e890c.png](https://user-images.githubusercontent.com/68587990/209667128-2b1f844c-012b-4af4-92d6-1710ef7e890c.png)
 
 - **실제 실행 결과**
 
-![https://user-images.githubusercontent.com/68587990/209461490-a784f3c6-8804-465b-a358-8454bccd8c61.png](https://user-images.githubusercontent.com/68587990/209461490-a784f3c6-8804-465b-a358-8454bccd8c61.png)
+![https://user-images.githubusercontent.com/68587990/209667137-19778867-b926-4c6f-b1a1-299b8c3329a4.png](https://user-images.githubusercontent.com/68587990/209667137-19778867-b926-4c6f-b1a1-299b8c3329a4.png)
 
 ```java
 17:30:46.777 [Thread-0] INFO me.whiteship.chapter11.item82.Worker - working!
