@@ -32,10 +32,10 @@
 <table class="waffle" cellspacing="0" cellpadding="0">
     <thead>
     <tr>
-        <th class="row-header freezebar-origin-ltr"></th>
+        <th style="width:30px;" class="row-header freezebar-origin-ltr"></th>
         <th id="32334081C0" style="width:123px;" class="column-headers-background">item</th>
-        <th id="32334081C1" style="width:76px;" class="column-headers-background">n주차</th>
-        <th id="32334081C2" style="width:474px;" class="column-headers-background">title</th>
+        <th id="32334081C1" style="width:50px;" class="column-headers-background">n주차</th>
+        <th id="32334081C2" style="width:250px;" class="column-headers-background">title</th>
         <th id="32334081C3" style="width:100px;" class="column-headers-background">발표</th>
         <th id="32334081C4" style="width:100px;" class="column-headers-background">질문</th>
     </tr>
